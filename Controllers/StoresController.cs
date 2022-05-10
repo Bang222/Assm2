@@ -29,7 +29,8 @@ namespace BookStore.Controllers
         [Authorize(Roles = "Seller")]
         public async Task<IActionResult> Index()
         {
-            var userContext = _context.Store.Include(s => s.User);
+            AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
+            var userContext = _context.Store.Include(s => s.User).Where(s=>s.UId==thisUser.Id);
             return View(await userContext.ToListAsync());
         }
 

@@ -35,8 +35,7 @@ namespace BookStore.Controllers
             int numberOfPages = (int)Math.Ceiling((double)numberOfRecords / _recordsPerPage);
             ViewBag.numberOfPages = numberOfPages;
             ViewBag.currentPage = id;
-            ViewData["CurrentFilter"] = searchString;
-            
+            ViewData["CurrentFilter"] = searchString;           
             if(searchString == null)
             {
                 List<Book> books = await _context.Book
@@ -123,20 +122,12 @@ namespace BookStore.Controllers
             }
             return RedirectToAction("Index", "Carts");
         }
-        public async Task<IActionResult> SendMail()
-        {
-            await _emailSender.SendEmailAsync("dungdanh127adv@gmail.com", "Customer's Order", "Order Accpeted");
-            return RedirectToAction("Index", "Carts");
-        }
-
-
         // GET: Books
         [Authorize(Roles = "Seller")]
         public async Task<IActionResult> Index(string searchString, int id = 0)
         {
             AppUser ThisUser = await _userManager.GetUserAsync(HttpContext.User);
             Store ThisStore = await _context.Store.FirstOrDefaultAsync(s => s.UId == ThisUser.Id);
-
             var books = _context.Book.Where(b => b.StoreId == ThisStore.Id).Include(b => b.Store);
             var BookContext = from b in books select b;
             if(searchString !=null)

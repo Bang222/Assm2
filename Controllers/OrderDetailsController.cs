@@ -29,22 +29,18 @@ namespace BookStore.Controllers
         [Authorize(Roles = "Seller")]
         public async Task<IActionResult> Index(int id)
         {
-            var userContext = _context.OrderDetail.Where(o => o.OrderId == id).Include(o => o.Book).Include(o => o.Order).Include(o => o.Order.User).Include(o => o.Book.Store);
+            var userContext = _context.OrderDetail.Where(o => o.OrderId == id)
+                .Include(o => o.Book).Include(o => o.Order)
+                .Include(o => o.Order.User).Include(o => o.Book.Store);
             return View(await userContext.ToListAsync());
         }
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Manager(int id)
         {
-            //string thisUserId = _userManager.GetUserId(HttpContext.User);
             AppUser user = await _userManager.GetUserAsync(HttpContext.User);
-            var userContext = _context.OrderDetail.Where(o => o.Order.UId == user.Id && o.OrderId == id).Include(o => o.Book).Include(o => o.Order).Include(o => o.Order.User).Include(o => o.Book.Store);
-            return View(await userContext.ToListAsync());
-        }
-        public async Task<IActionResult> OrderStore()
-        {
-            AppUser thisUser = await _userManager.GetUserAsync(HttpContext.User);
-            Store thisStore = await _context.Store.FirstOrDefaultAsync(s => s.UId == thisUser.Id);
-            var userContext = _context.OrderDetail.Where(o => o.Book.StoreId == thisStore.Id).Include(o => o.Book).Include(o => o.Order).Include(o => o.Order.User).Include(o => o.Book.Store);
+            var userContext = _context.OrderDetail.Where(o => o.Order.UId == user.Id && o.OrderId == id)
+                .Include(o => o.Book).Include(o => o.Order)
+                .Include(o => o.Order.User).Include(o => o.Book.Store);
             return View(await userContext.ToListAsync());
         }
     }

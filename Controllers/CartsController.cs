@@ -38,6 +38,7 @@ namespace BookStore.Models
             return View(_context.Cart.Where(c => c.UId == thisUserId));
 
         }
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> Increase(string isbn)
         {
             string thisUserId = _userManager.GetUserId(HttpContext.User);
@@ -48,6 +49,7 @@ namespace BookStore.Models
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> removeItem(string isbn)
         {
             string thisUserId = _userManager.GetUserId(HttpContext.User);
